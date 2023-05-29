@@ -12,7 +12,7 @@ const ctxKeyService = apic.CtxServiceKey("transcriberClientKey")
 
 func defaultTranscriberClientOptions() []apic.ClientOption {
 	return []apic.ClientOption{
-		apic.WithEndpoint("transcribe.api.antinvestor.com:443"),
+		apic.WithEndpoint("transcriber.api.antinvestor.com:443"),
 		apic.WithGRPCDialOption(grpc.WithDisableServiceConfig()),
 		apic.WithGRPCDialOption(grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(math.MaxInt32))),
 	}
@@ -32,7 +32,6 @@ func FromContext(ctx context.Context) *TranscribeClient {
 }
 
 // TranscribeClient is a client for interacting with the transcribe service API.
-//
 // Methods, except Close, may be called concurrently. However, fields must not be modified concurrently with method calls.
 type TranscribeClient struct {
 	// gRPC connection to the service.
@@ -45,24 +44,20 @@ type TranscribeClient struct {
 	xMetadata metadata.MD
 }
 
-// InstantiateNotificationClient creates a new notification client.
-//
-// The service that an application uses to send and access received messages
-func InstantiateNotificationClient(clientConnection *grpc.ClientConn, transcribeServiceCli TranscriberServiceClient) *TranscribeClient {
+// InstantiateTranscriberClient creates a new transcriber client.
+// The service that an application uses to transcribe speech to text
+func InstantiateTranscriberClient(clientConnection *grpc.ClientConn, transcribeServiceCli TranscriberServiceClient) *TranscribeClient {
 	c := &TranscribeClient{
 		clientConn: clientConnection,
 		client:     transcribeServiceCli,
 	}
-
 	c.setClientInfo()
-
 	return c
 }
 
-// NewNotificationClient creates a new notification client.
-//
-// The service that an application uses to send and access received messages
-func NewNotificationClient(ctx context.Context, opts ...apic.ClientOption) (*TranscribeClient, error) {
+// NewTranscriberClient creates a new transcriber client.
+// The service that an application uses to transcribe speech to text
+func NewTranscriberClient(ctx context.Context, opts ...apic.ClientOption) (*TranscribeClient, error) {
 	clientOpts := defaultTranscriberClientOptions()
 
 	connPool, err := apic.DialConnection(ctx, append(clientOpts, opts...)...)
@@ -71,7 +66,7 @@ func NewNotificationClient(ctx context.Context, opts ...apic.ClientOption) (*Tra
 	}
 
 	transcribeServiceCli := NewTranscriberServiceClient(connPool)
-	return InstantiateNotificationClient(connPool, transcribeServiceCli), nil
+	return InstantiateTranscriberClient(connPool, transcribeServiceCli), nil
 }
 
 // Close closes the connection to the API service. The user should invoke this when
