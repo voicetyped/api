@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package apis;
+option go_package = ".;transcriberv1";
+
+option java_multiple_files = true;
+option java_package = "com.antinvestor.api.transcriber";
+
+
+import "google/protobuf/duration.proto";
+
+
+// Word-specific information for recognized words.
+message VoiceText {
+
+  // The word corresponding to this set of information.
+  string data = 1;
+
+  // The confidence estimate between 0.0 and 1.0. A higher number
+  // indicates an estimated greater likelihood that the recognized words are
+  // correct.
+  float confidence = 2;
+
+  // A distinct label is assigned for every speaker within the audio. This field
+  // specifies which one of those speakers was detected to have spoken this
+  // word.
+  string speaker_label = 3  ;
+}
+
+// `TranscribeResponse` is the only message returned to the client.
+// A series of zero or more `TranscribeResponse`
+// messages are streamed back to the client. If there is no recognizable
+// audio then no messages are streamed back to the client.
+//
+// - In each response, only one of these fields will be set:
+//     `error`,
+//     `speech_event_type`, or
+//     one or more (repeated) `results`.
+message TranscribeResponse {
+  // Indicates the type of speech event.
+  enum SpeechEventType {
+    // No speech event specified.
+    SPEECH_EVENT_TYPE_UNSPECIFIED = 0;
+
+    // This event indicates that the server has detected the end of the user's
+    // speech utterance and expects no additional speech. Therefore, the server
+    // will not process additional audio and will close the gRPC bidirectional
+    // stream. This event is only sent if there was a force cutoff due to
+    // silence being detected early. This event is only available through the
+    // `latest_short` [model][google.cloud.speech.v2.Recognizer.model].
+    END_OF_SINGLE_UTTERANCE = 1;
+
+    // This event indicates that the server has detected the beginning of human
+    // voice activity in the stream. This event can be returned multiple times
+    // if speech starts and stops repeatedly throughout the stream. This event
+    // is only sent if `voice_activity_events` is set to true.
+    SPEECH_ACTIVITY_BEGIN = 2;
+
+    // This event indicates that the server has detected the end of human voice
+    // activity in the stream. This event can be returned multiple times if
+    // speech starts and stops repeatedly throughout the stream. This event is
+    // only sent if `voice_activity_events` is set to true.
+    SPEECH_ACTIVITY_END = 3;
+  }
+
+  // This repeated list contains zero or more results that
+  // correspond to consecutive portions of the audio currently being processed.
+  // It contains zero or one results (the interim results).
+  repeated VoiceText results = 6;
+
+  // Indicates the type of speech event.
+  SpeechEventType speech_event_type = 3;
+
+  // Time offset between the beginning of the audio and event emission.
+  google.protobuf.Duration speech_event_offset = 7;
+
+}
+
+
+// Request message for the
+// [TranscribeRequest]
+// [audio][google.cloud.speech.v2.StreamingRecognizeRequest.audio]. All
+// subsequent messages must contain
+// [audio][google.cloud.speech.v2.StreamingRecognizeRequest.audio] and must not
+// contain a
+// [streaming_config][google.cloud.speech.v2.StreamingRecognizeRequest.streaming_config]
+// message.
+message TranscribeRequest {
+    // Inline audio bytes to be Recognized.
+    // Maximum size for this field is 15 KB per request.
+    bytes audio = 5;
+
+}
+
+
+
+service TranscriberService {
+  // Performs bidirectional streaming speech recognition: receive results while
+  // sending audio.
+  rpc Transcribe(stream TranscribeRequest)
+      returns (stream TranscribeResponse) {}
+}
