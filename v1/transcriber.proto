@@ -24,7 +24,11 @@ message VoiceText {
   // A distinct label is assigned for every speaker within the audio. This field
   // specifies which one of those speakers was detected to have spoken this
   // word.
-  string speaker_label = 3  ;
+  string speaker_label = 3;
+
+  // A label to show which language the text/data shared is in. The value can be
+  // blank if the system is not able to determine the language of the text.
+  string language = 4;
 }
 
 // `TranscribeResponse` is the only message returned to the client.
@@ -86,9 +90,9 @@ message TranscribeResponse {
 // [streaming_config][google.cloud.speech.v2.StreamingRecognizeRequest.streaming_config]
 // message.
 message TranscribeRequest {
-    // Inline audio bytes to be Recognized.
-    // Maximum size for this field is 15 KB per request.
-    bytes audio = 5;
+  // Inline audio bytes to be Recognized.
+  // Maximum size for this field is 15 KB per request.
+  bytes audio = 5;
 
 }
 

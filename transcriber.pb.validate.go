@@ -63,6 +63,8 @@ func (m *VoiceText) validate(all bool) error {
 
 	// no validation rules for SpeakerLabel
 
+	// no validation rules for Language
+
 	if len(errors) > 0 {
 		return VoiceTextMultiError(errors)
 	}
