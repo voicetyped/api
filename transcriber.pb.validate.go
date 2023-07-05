@@ -35,6 +35,112 @@ var (
 	_ = sort.Sort
 )
 
+// Validate checks the field values on TranscribeConfig with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *TranscribeConfig) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on TranscribeConfig with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// TranscribeConfigMultiError, or nil if none found.
+func (m *TranscribeConfig) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *TranscribeConfig) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for QualityType
+
+	// no validation rules for DecodingSamplingRate
+
+	// no validation rules for DecodingAudioChannelCount
+
+	if len(errors) > 0 {
+		return TranscribeConfigMultiError(errors)
+	}
+
+	return nil
+}
+
+// TranscribeConfigMultiError is an error wrapping multiple validation errors
+// returned by TranscribeConfig.ValidateAll() if the designated constraints
+// aren't met.
+type TranscribeConfigMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m TranscribeConfigMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m TranscribeConfigMultiError) AllErrors() []error { return m }
+
+// TranscribeConfigValidationError is the validation error returned by
+// TranscribeConfig.Validate if the designated constraints aren't met.
+type TranscribeConfigValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e TranscribeConfigValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e TranscribeConfigValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e TranscribeConfigValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e TranscribeConfigValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e TranscribeConfigValidationError) ErrorName() string { return "TranscribeConfigValidationError" }
+
+// Error satisfies the builtin error interface
+func (e TranscribeConfigValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sTranscribeConfig.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = TranscribeConfigValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = TranscribeConfigValidationError{}
+
 // Validate checks the field values on VoiceText with the rules defined in the
 // proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
@@ -331,7 +437,75 @@ func (m *TranscribeRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Audio
+	switch v := m.Request.(type) {
+	case *TranscribeRequest_Configuration:
+		if v == nil {
+			err := TranscribeRequestValidationError{
+				field:  "Request",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+		if all {
+			switch v := interface{}(m.GetConfiguration()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, TranscribeRequestValidationError{
+						field:  "Configuration",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, TranscribeRequestValidationError{
+						field:  "Configuration",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetConfiguration()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return TranscribeRequestValidationError{
+					field:  "Configuration",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	case *TranscribeRequest_SpeechEventType:
+		if v == nil {
+			err := TranscribeRequestValidationError{
+				field:  "Request",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		// no validation rules for SpeechEventType
+	case *TranscribeRequest_Audio:
+		if v == nil {
+			err := TranscribeRequestValidationError{
+				field:  "Request",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		// no validation rules for Audio
+	default:
+		_ = v // ensures v is used
+	}
 
 	if len(errors) > 0 {
 		return TranscribeRequestMultiError(errors)

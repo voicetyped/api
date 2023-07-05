@@ -9,6 +9,56 @@ option java_package = "com.antinvestor.api.transcriber";
 
 import "google/protobuf/duration.proto";
 
+// Configuration at the start of streaming request
+message TranscribeConfig {
+
+  // Indicates the expected quality of transcription.
+  // follows this law :-> you can control any two quality, speed and price
+  enum Quality{
+    // Here we value the speed of transcription, anything goes
+    LOW = 0;
+    // This is the default with a good balance on speed and accuracy of the transcription
+    MEDIUM = 1;
+    // The best available quality is what we care about, throw all the available resources to fullfil this goal.
+    HIGH = 2;
+  }
+  // Defines the quality with which our transcription is performed
+  Quality quality_type = 1;
+
+  // Defines the audio configuration that may be useful on the server side process
+  int32 decoding_sampling_rate = 2;
+
+  // Defines the audio channel count
+  int32 decoding_audio_channel_count = 3;
+
+}
+
+// Indicates the type of speech event.
+enum SpeechEventType {
+  // No speech event specified.
+  SPEECH_EVENT_TYPE_UNSPECIFIED = 0;
+
+  // This event indicates that the server has detected the end of the user's
+  // speech utterance and expects no additional speech. Therefore, the server
+  // will not process additional audio and will close the gRPC bidirectional
+  // stream. This event is only sent if there was a force cutoff due to
+  // silence being detected early. This event is only available through the
+  // `latest_short` [model][google.cloud.speech.v2.Recognizer.model].
+  END_OF_SINGLE_UTTERANCE = 1;
+
+  // This event indicates that the server has detected the beginning of human
+  // voice activity in the stream. This event can be returned multiple times
+  // if speech starts and stops repeatedly throughout the stream. This event
+  // is only sent if `voice_activity_events` is set to true.
+  SPEECH_ACTIVITY_BEGIN = 2;
+
+  // This event indicates that the server has detected the end of human voice
+  // activity in the stream. This event can be returned multiple times if
+  // speech starts and stops repeatedly throughout the stream. This event is
+  // only sent if `voice_activity_events` is set to true.
+  SPEECH_ACTIVITY_END = 3;
+}
+
 
 // Word-specific information for recognized words.
 message VoiceText {
@@ -41,31 +91,6 @@ message VoiceText {
 //     `speech_event_type`, or
 //     one or more (repeated) `results`.
 message TranscribeResponse {
-  // Indicates the type of speech event.
-  enum SpeechEventType {
-    // No speech event specified.
-    SPEECH_EVENT_TYPE_UNSPECIFIED = 0;
-
-    // This event indicates that the server has detected the end of the user's
-    // speech utterance and expects no additional speech. Therefore, the server
-    // will not process additional audio and will close the gRPC bidirectional
-    // stream. This event is only sent if there was a force cutoff due to
-    // silence being detected early. This event is only available through the
-    // `latest_short` [model][google.cloud.speech.v2.Recognizer.model].
-    END_OF_SINGLE_UTTERANCE = 1;
-
-    // This event indicates that the server has detected the beginning of human
-    // voice activity in the stream. This event can be returned multiple times
-    // if speech starts and stops repeatedly throughout the stream. This event
-    // is only sent if `voice_activity_events` is set to true.
-    SPEECH_ACTIVITY_BEGIN = 2;
-
-    // This event indicates that the server has detected the end of human voice
-    // activity in the stream. This event can be returned multiple times if
-    // speech starts and stops repeatedly throughout the stream. This event is
-    // only sent if `voice_activity_events` is set to true.
-    SPEECH_ACTIVITY_END = 3;
-  }
 
   // This repeated list contains zero or more results that
   // correspond to consecutive portions of the audio currently being processed.
@@ -90,9 +115,19 @@ message TranscribeResponse {
 // [streaming_config][google.cloud.speech.v2.StreamingRecognizeRequest.streaming_config]
 // message.
 message TranscribeRequest {
-  // Inline audio bytes to be Recognized.
-  // Maximum size for this field is 15 KB per request.
-  bytes audio = 5;
+  oneof request {
+
+    // Options to customize transcription service
+    TranscribeConfig configuration = 1;
+
+    // Indicates the type of speech event.
+    SpeechEventType speech_event_type = 3;
+
+    // Inline audio bytes to be Recognized.
+    // Maximum size for this field is 15 KB per request.
+    bytes audio = 5;
+
+  }
 
 }
 
