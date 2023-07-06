@@ -335,6 +335,8 @@ func (m *TranscribeResponse) validate(all bool) error {
 		}
 	}
 
+	// no validation rules for Provisional
+
 	if len(errors) > 0 {
 		return TranscribeResponseMultiError(errors)
 	}

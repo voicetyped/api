@@ -79,6 +79,7 @@ message VoiceText {
   // A label to show which language the text/data shared is in. The value can be
   // blank if the system is not able to determine the language of the text.
   string language = 4;
+
 }
 
 // `TranscribeResponse` is the only message returned to the client.
@@ -95,7 +96,7 @@ message TranscribeResponse {
   // This repeated list contains zero or more results that
   // correspond to consecutive portions of the audio currently being processed.
   // It contains zero or one results (the interim results).
-  repeated VoiceText results = 6;
+  repeated VoiceText results = 5;
 
   // Indicates the type of speech event.
   SpeechEventType speech_event_type = 3;
@@ -103,6 +104,7 @@ message TranscribeResponse {
   // Time offset between the beginning of the audio and event emission.
   google.protobuf.Duration speech_event_offset = 7;
 
+  bool provisional = 8;
 }
 
 
