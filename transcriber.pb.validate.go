@@ -59,6 +59,8 @@ func (m *TranscribeConfig) validate(all bool) error {
 
 	// no validation rules for QualityType
 
+	// no validation rules for Encoding
+
 	// no validation rules for DecodingSamplingRate
 
 	// no validation rules for DecodingAudioChannelCount

@@ -22,14 +22,94 @@ message TranscribeConfig {
     // The best available quality is what we care about, throw all the available resources to fullfil this goal.
     HIGH = 2;
   }
+
+  // The encoding of the audio data sent in the request.
+  //
+  // All encodings support only 1 channel (mono) audio, unless the
+  // `audio_channel_count` and `enable_separate_recognition_per_channel` fields
+  // are set.
+  //
+  // For best results, the audio source should be captured and transmitted using
+  // a lossless encoding (`FLAC` or `LINEAR16`). The accuracy of the speech
+  // recognition can be reduced if lossy codecs are used to capture or transmit
+  // audio, particularly if background noise is present. Lossy codecs include
+  // `MULAW`, `AMR`, `AMR_WB`, `OGG_OPUS`, `SPEEX_WITH_HEADER_BYTE`, `MP3`,
+  // and `WEBM_OPUS`.
+  //
+  // The `FLAC` and `WAV` audio file formats include a header that describes the
+  // included audio content. You can request recognition for `WAV` files that
+  // contain either `LINEAR16` or `MULAW` encoded audio.
+  // If you send `FLAC` or `WAV` audio file format in
+  // your request, you do not need to specify an `AudioEncoding`; the audio
+  // encoding format is determined from the file header. If you specify
+  // an `AudioEncoding` when you send  send `FLAC` or `WAV` audio, the
+  // encoding configuration must match the encoding described in the audio
+  // header; otherwise the request returns an
+  // [google.rpc.Code.INVALID_ARGUMENT][google.rpc.Code.INVALID_ARGUMENT] error
+  // code.
+  enum AudioEncoding {
+    // Not specified.
+    ENCODING_UNSPECIFIED = 0;
+
+    // Uncompressed 16-bit signed little-endian samples (Linear PCM).
+    LINEAR16 = 1;
+
+    // `FLAC` (Free Lossless Audio
+    // Codec) is the recommended encoding because it is
+    // lossless--therefore recognition is not compromised--and
+    // requires only about half the bandwidth of `LINEAR16`. `FLAC` stream
+    // encoding supports 16-bit and 24-bit samples, however, not all fields in
+    // `STREAMINFO` are supported.
+    FLAC = 2;
+
+    // 8-bit samples that compand 14-bit audio samples using G.711 PCMU/mu-law.
+    MULAW = 3;
+
+    // Adaptive Multi-Rate Narrowband codec. `sample_rate_hertz` must be 8000.
+    AMR = 4;
+
+    // Adaptive Multi-Rate Wideband codec. `sample_rate_hertz` must be 16000.
+    AMR_WB = 5;
+
+    // Opus encoded audio frames in Ogg container
+    // ([OggOpus](https://wiki.xiph.org/OggOpus)).
+    // `sample_rate_hertz` must be one of 8000, 12000, 16000, 24000, or 48000.
+    OGG_OPUS = 6;
+
+    // Although the use of lossy encodings is not recommended, if a very low
+    // bitrate encoding is required, `OGG_OPUS` is highly preferred over
+    // Speex encoding. The [Speex](https://speex.org/)  encoding supported by
+    // Cloud Speech API has a header byte in each block, as in MIME type
+    // `audio/x-speex-with-header-byte`.
+    // It is a variant of the RTP Speex encoding defined in
+    // [RFC 5574](https://tools.ietf.org/html/rfc5574).
+    // The stream is a sequence of blocks, one block per RTP packet. Each block
+    // starts with a byte containing the length of the block, in bytes, followed
+    // by one or more frames of Speex data, padded to an integral number of
+    // bytes (octets) as specified in RFC 5574. In other words, each RTP header
+    // is replaced with a single byte containing the block length. Only Speex
+    // wideband is supported. `sample_rate_hertz` must be 16000.
+    SPEEX_WITH_HEADER_BYTE = 7;
+
+    // Opus encoded audio frames in WebM container
+    // ([OggOpus](https://wiki.xiph.org/OggOpus)). `sample_rate_hertz` must be
+    // one of 8000, 12000, 16000, 24000, or 48000.
+    WEBM_OPUS = 9;
+  }
+
   // Defines the quality with which our transcription is performed
   Quality quality_type = 1;
 
+  // Encoding of audio data sent in all `RecognitionAudio` messages.
+  // This field is optional for `FLAC` and `WAV` audio files and required
+  // for all other audio formats.
+  AudioEncoding encoding = 2;
+
   // Defines the audio configuration that may be useful on the server side process
-  int32 decoding_sampling_rate = 2;
+  int32 decoding_sampling_rate = 3;
 
   // Defines the audio channel count
-  int32 decoding_audio_channel_count = 3;
+  int32 decoding_audio_channel_count = 4;
 
 }
 
@@ -42,8 +122,7 @@ enum SpeechEventType {
   // speech utterance and expects no additional speech. Therefore, the server
   // will not process additional audio and will close the gRPC bidirectional
   // stream. This event is only sent if there was a force cutoff due to
-  // silence being detected early. This event is only available through the
-  // `latest_short` [model][google.cloud.speech.v2.Recognizer.model].
+  // silence being detected early.
   END_OF_SINGLE_UTTERANCE = 1;
 
   // This event indicates that the server has detected the beginning of human
@@ -128,7 +207,6 @@ message TranscribeRequest {
     // Inline audio bytes to be Recognized.
     // Maximum size for this field is 15 KB per request.
     bytes audio = 5;
-
   }
 
 }
