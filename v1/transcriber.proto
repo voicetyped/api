@@ -4,7 +4,7 @@ package apis;
 option go_package = ".;transcriberv1";
 
 option java_multiple_files = true;
-option java_package = "com.antinvestor.api.transcriber";
+option java_package = "com.voicetyped.api.transcriber";
 
 
 import "google/protobuf/duration.proto";

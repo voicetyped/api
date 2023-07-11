@@ -1,4 +1,4 @@
-module github.com/antinvestor/service-transcriber-api
+module github.com/voicetyped/api
 
 go 1.20
 
