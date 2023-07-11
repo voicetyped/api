@@ -13,6 +13,6 @@ for ant investors to convert all their speeches into text
 
     `protoc --proto_path=../apis --proto_path=./v1  transcriber.proto --go-grpc_out=./ `
     
-    `mockgen -source=notification_grpc.pb.go -self_package=github.com/antinvestor/service-transcriber-api -package=transcriberv1 -destination=transcriber_grpc_mock.go`
+    `mockgen -source=notification_grpc.pb.go -self_package=github.com/voicetyped/api -package=transcriberv1 -destination=transcriber_grpc_mock.go`
 
 with that in place update the implementation appropriately

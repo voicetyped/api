@@ -12,7 +12,7 @@ const ctxKeyService = apic.CtxServiceKey("transcriberClientKey")
 
 func defaultTranscriberClientOptions() []apic.ClientOption {
 	return []apic.ClientOption{
-		apic.WithEndpoint("transcriber.api.antinvestor.com:443"),
+		apic.WithEndpoint("api.voicetyped.com:443"),
 		apic.WithGRPCDialOption(grpc.WithDisableServiceConfig()),
 		apic.WithGRPCDialOption(grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(math.MaxInt32))),
 	}
