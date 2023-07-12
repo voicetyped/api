@@ -131,11 +131,16 @@ enum SpeechEventType {
   // is only sent if `voice_activity_events` is set to true.
   SPEECH_ACTIVITY_BEGIN = 2;
 
-  // This event indicates that the server has detected the end of human voice
-  // activity in the stream. This event can be returned multiple times if
-  // speech starts and stops repeatedly throughout the stream. This event is
-  // only sent if `voice_activity_events` is set to true.
+  // This event indicates that the end of human voice
+  // activity in the stream. It is mostly because of a long duration of silence.
+  // This event can be returned multiple times or sent multiple times by the client
+  // to get a final transcription of the streamed data.
   SPEECH_ACTIVITY_END = 3;
+
+  // This event is sent by the client to the server requesting for some provisional
+  // results as the server buffers the stream. This event can be sent multiple times
+  // throught the transcription process to get near realtime feedback with provisional output
+  SPEECH_ACTIVITY_REQUEST_PROVISIONAL = 4;
 }
 
 
