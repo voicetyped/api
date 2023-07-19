@@ -9,6 +9,28 @@ option java_package = "com.voicetyped.api.transcriber";
 
 import "google/protobuf/duration.proto";
 
+message AudioFormat{
+
+  // Defines the audio the audio format sampling rate for server to understand
+  int32 sampling_rate = 1;
+
+  // Defines the audio format sample size in bits for server to understand how to handle file
+  int32 sample_size_in_bits = 2;
+
+  // Defines the audio format channel count
+  int32 channel_count = 3;
+
+  // Defines the number of samples in the file, this is only useful when processing a file.
+  int32 frame_size = 4;
+
+  // Defines the audio format frame rate
+  int32 frame_rate = 5;
+
+  // Defines weather the bytes in the audio file are big endian
+  bool is_big_endian = 6;
+
+}
+
 // Configuration at the start of streaming request
 message TranscribeConfig {
 
@@ -105,11 +127,8 @@ message TranscribeConfig {
   // for all other audio formats.
   AudioEncoding encoding = 2;
 
-  // Defines the audio configuration that may be useful on the server side process
-  int32 decoding_sampling_rate = 3;
-
-  // Defines the audio channel count
-  int32 decoding_audio_channel_count = 4;
+  // Defines the audio format settings to be utilized in defining the file type
+  AudioFormat audioFormat = 3;
 
 }
 

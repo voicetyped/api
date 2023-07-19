@@ -35,6 +35,117 @@ var (
 	_ = sort.Sort
 )
 
+// Validate checks the field values on AudioFormat with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *AudioFormat) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on AudioFormat with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in AudioFormatMultiError, or
+// nil if none found.
+func (m *AudioFormat) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AudioFormat) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for SamplingRate
+
+	// no validation rules for SampleSizeInBits
+
+	// no validation rules for ChannelCount
+
+	// no validation rules for FrameSize
+
+	// no validation rules for FrameRate
+
+	// no validation rules for IsBigEndian
+
+	if len(errors) > 0 {
+		return AudioFormatMultiError(errors)
+	}
+
+	return nil
+}
+
+// AudioFormatMultiError is an error wrapping multiple validation errors
+// returned by AudioFormat.ValidateAll() if the designated constraints aren't met.
+type AudioFormatMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AudioFormatMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AudioFormatMultiError) AllErrors() []error { return m }
+
+// AudioFormatValidationError is the validation error returned by
+// AudioFormat.Validate if the designated constraints aren't met.
+type AudioFormatValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AudioFormatValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AudioFormatValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AudioFormatValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AudioFormatValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AudioFormatValidationError) ErrorName() string { return "AudioFormatValidationError" }
+
+// Error satisfies the builtin error interface
+func (e AudioFormatValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAudioFormat.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AudioFormatValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AudioFormatValidationError{}
+
 // Validate checks the field values on TranscribeConfig with the rules defined
 // in the proto definition for this message. If any rules are violated, the
 // first error encountered is returned, or nil if there are no violations.
@@ -61,9 +172,34 @@ func (m *TranscribeConfig) validate(all bool) error {
 
 	// no validation rules for Encoding
 
-	// no validation rules for DecodingSamplingRate
-
-	// no validation rules for DecodingAudioChannelCount
+	if all {
+		switch v := interface{}(m.GetAudioFormat()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, TranscribeConfigValidationError{
+					field:  "AudioFormat",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, TranscribeConfigValidationError{
+					field:  "AudioFormat",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetAudioFormat()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return TranscribeConfigValidationError{
+				field:  "AudioFormat",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	if len(errors) > 0 {
 		return TranscribeConfigMultiError(errors)
