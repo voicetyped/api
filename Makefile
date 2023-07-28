@@ -31,8 +31,8 @@ doc:    ## generate godocs and start a local documentation webserver on port 808
 	godoc -http=:8085 -index
 
 gen:
-	protoc --proto_path=../apis --proto_path=./v1 --go_out=./ --validate_out=lang=go:. transcriber.proto;
-	protoc --proto_path=../apis --proto_path=./v1  transcriber.proto --go-grpc_out=./
+	protoc --proto_path=./v1 --go_out=./ --validate_out=lang=go:. transcriber.proto;
+	protoc --proto_path=./v1  transcriber.proto --go-grpc_out=./
 	mockgen -source=transcriber_grpc.pb.go -self_package=github.com/voicetyped/api -package=transcriberv1 -destination=transcriber_grpc_mock.go
 
 
