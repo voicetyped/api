@@ -36,6 +36,26 @@ func (m *MockTranscriberServiceClient) EXPECT() *MockTranscriberServiceClientMoc
 	return m.recorder
 }
 
+// Prompt mocks base method.
+func (m *MockTranscriberServiceClient) Prompt(ctx context.Context, opts ...grpc.CallOption) (TranscriberService_PromptClient, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Prompt", varargs...)
+	ret0, _ := ret[0].(TranscriberService_PromptClient)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Prompt indicates an expected call of Prompt.
+func (mr *MockTranscriberServiceClientMockRecorder) Prompt(ctx interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Prompt", reflect.TypeOf((*MockTranscriberServiceClient)(nil).Prompt), varargs...)
+}
+
 // Transcribe mocks base method.
 func (m *MockTranscriberServiceClient) Transcribe(ctx context.Context, opts ...grpc.CallOption) (TranscriberService_TranscribeClient, error) {
 	m.ctrl.T.Helper()
@@ -193,6 +213,143 @@ func (mr *MockTranscriberService_TranscribeClientMockRecorder) Trailer() *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Trailer", reflect.TypeOf((*MockTranscriberService_TranscribeClient)(nil).Trailer))
 }
 
+// MockTranscriberService_PromptClient is a mock of TranscriberService_PromptClient interface.
+type MockTranscriberService_PromptClient struct {
+	ctrl     *gomock.Controller
+	recorder *MockTranscriberService_PromptClientMockRecorder
+}
+
+// MockTranscriberService_PromptClientMockRecorder is the mock recorder for MockTranscriberService_PromptClient.
+type MockTranscriberService_PromptClientMockRecorder struct {
+	mock *MockTranscriberService_PromptClient
+}
+
+// NewMockTranscriberService_PromptClient creates a new mock instance.
+func NewMockTranscriberService_PromptClient(ctrl *gomock.Controller) *MockTranscriberService_PromptClient {
+	mock := &MockTranscriberService_PromptClient{ctrl: ctrl}
+	mock.recorder = &MockTranscriberService_PromptClientMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockTranscriberService_PromptClient) EXPECT() *MockTranscriberService_PromptClientMockRecorder {
+	return m.recorder
+}
+
+// CloseAndRecv mocks base method.
+func (m *MockTranscriberService_PromptClient) CloseAndRecv() (*QResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CloseAndRecv")
+	ret0, _ := ret[0].(*QResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CloseAndRecv indicates an expected call of CloseAndRecv.
+func (mr *MockTranscriberService_PromptClientMockRecorder) CloseAndRecv() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CloseAndRecv", reflect.TypeOf((*MockTranscriberService_PromptClient)(nil).CloseAndRecv))
+}
+
+// CloseSend mocks base method.
+func (m *MockTranscriberService_PromptClient) CloseSend() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CloseSend")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CloseSend indicates an expected call of CloseSend.
+func (mr *MockTranscriberService_PromptClientMockRecorder) CloseSend() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CloseSend", reflect.TypeOf((*MockTranscriberService_PromptClient)(nil).CloseSend))
+}
+
+// Context mocks base method.
+func (m *MockTranscriberService_PromptClient) Context() context.Context {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Context")
+	ret0, _ := ret[0].(context.Context)
+	return ret0
+}
+
+// Context indicates an expected call of Context.
+func (mr *MockTranscriberService_PromptClientMockRecorder) Context() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Context", reflect.TypeOf((*MockTranscriberService_PromptClient)(nil).Context))
+}
+
+// Header mocks base method.
+func (m *MockTranscriberService_PromptClient) Header() (metadata.MD, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Header")
+	ret0, _ := ret[0].(metadata.MD)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Header indicates an expected call of Header.
+func (mr *MockTranscriberService_PromptClientMockRecorder) Header() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Header", reflect.TypeOf((*MockTranscriberService_PromptClient)(nil).Header))
+}
+
+// RecvMsg mocks base method.
+func (m_2 *MockTranscriberService_PromptClient) RecvMsg(m interface{}) error {
+	m_2.ctrl.T.Helper()
+	ret := m_2.ctrl.Call(m_2, "RecvMsg", m)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RecvMsg indicates an expected call of RecvMsg.
+func (mr *MockTranscriberService_PromptClientMockRecorder) RecvMsg(m interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RecvMsg", reflect.TypeOf((*MockTranscriberService_PromptClient)(nil).RecvMsg), m)
+}
+
+// Send mocks base method.
+func (m *MockTranscriberService_PromptClient) Send(arg0 *QRequest) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Send", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Send indicates an expected call of Send.
+func (mr *MockTranscriberService_PromptClientMockRecorder) Send(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Send", reflect.TypeOf((*MockTranscriberService_PromptClient)(nil).Send), arg0)
+}
+
+// SendMsg mocks base method.
+func (m_2 *MockTranscriberService_PromptClient) SendMsg(m interface{}) error {
+	m_2.ctrl.T.Helper()
+	ret := m_2.ctrl.Call(m_2, "SendMsg", m)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendMsg indicates an expected call of SendMsg.
+func (mr *MockTranscriberService_PromptClientMockRecorder) SendMsg(m interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendMsg", reflect.TypeOf((*MockTranscriberService_PromptClient)(nil).SendMsg), m)
+}
+
+// Trailer mocks base method.
+func (m *MockTranscriberService_PromptClient) Trailer() metadata.MD {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Trailer")
+	ret0, _ := ret[0].(metadata.MD)
+	return ret0
+}
+
+// Trailer indicates an expected call of Trailer.
+func (mr *MockTranscriberService_PromptClientMockRecorder) Trailer() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Trailer", reflect.TypeOf((*MockTranscriberService_PromptClient)(nil).Trailer))
+}
+
 // MockTranscriberServiceServer is a mock of TranscriberServiceServer interface.
 type MockTranscriberServiceServer struct {
 	ctrl     *gomock.Controller
@@ -214,6 +371,20 @@ func NewMockTranscriberServiceServer(ctrl *gomock.Controller) *MockTranscriberSe
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockTranscriberServiceServer) EXPECT() *MockTranscriberServiceServerMockRecorder {
 	return m.recorder
+}
+
+// Prompt mocks base method.
+func (m *MockTranscriberServiceServer) Prompt(arg0 TranscriberService_PromptServer) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Prompt", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Prompt indicates an expected call of Prompt.
+func (mr *MockTranscriberServiceServerMockRecorder) Prompt(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Prompt", reflect.TypeOf((*MockTranscriberServiceServer)(nil).Prompt), arg0)
 }
 
 // Transcribe mocks base method.
@@ -409,4 +580,138 @@ func (m *MockTranscriberService_TranscribeServer) SetTrailer(arg0 metadata.MD) {
 func (mr *MockTranscriberService_TranscribeServerMockRecorder) SetTrailer(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetTrailer", reflect.TypeOf((*MockTranscriberService_TranscribeServer)(nil).SetTrailer), arg0)
+}
+
+// MockTranscriberService_PromptServer is a mock of TranscriberService_PromptServer interface.
+type MockTranscriberService_PromptServer struct {
+	ctrl     *gomock.Controller
+	recorder *MockTranscriberService_PromptServerMockRecorder
+}
+
+// MockTranscriberService_PromptServerMockRecorder is the mock recorder for MockTranscriberService_PromptServer.
+type MockTranscriberService_PromptServerMockRecorder struct {
+	mock *MockTranscriberService_PromptServer
+}
+
+// NewMockTranscriberService_PromptServer creates a new mock instance.
+func NewMockTranscriberService_PromptServer(ctrl *gomock.Controller) *MockTranscriberService_PromptServer {
+	mock := &MockTranscriberService_PromptServer{ctrl: ctrl}
+	mock.recorder = &MockTranscriberService_PromptServerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockTranscriberService_PromptServer) EXPECT() *MockTranscriberService_PromptServerMockRecorder {
+	return m.recorder
+}
+
+// Context mocks base method.
+func (m *MockTranscriberService_PromptServer) Context() context.Context {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Context")
+	ret0, _ := ret[0].(context.Context)
+	return ret0
+}
+
+// Context indicates an expected call of Context.
+func (mr *MockTranscriberService_PromptServerMockRecorder) Context() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Context", reflect.TypeOf((*MockTranscriberService_PromptServer)(nil).Context))
+}
+
+// Recv mocks base method.
+func (m *MockTranscriberService_PromptServer) Recv() (*QRequest, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Recv")
+	ret0, _ := ret[0].(*QRequest)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Recv indicates an expected call of Recv.
+func (mr *MockTranscriberService_PromptServerMockRecorder) Recv() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Recv", reflect.TypeOf((*MockTranscriberService_PromptServer)(nil).Recv))
+}
+
+// RecvMsg mocks base method.
+func (m_2 *MockTranscriberService_PromptServer) RecvMsg(m interface{}) error {
+	m_2.ctrl.T.Helper()
+	ret := m_2.ctrl.Call(m_2, "RecvMsg", m)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RecvMsg indicates an expected call of RecvMsg.
+func (mr *MockTranscriberService_PromptServerMockRecorder) RecvMsg(m interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RecvMsg", reflect.TypeOf((*MockTranscriberService_PromptServer)(nil).RecvMsg), m)
+}
+
+// SendAndClose mocks base method.
+func (m *MockTranscriberService_PromptServer) SendAndClose(arg0 *QResponse) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendAndClose", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendAndClose indicates an expected call of SendAndClose.
+func (mr *MockTranscriberService_PromptServerMockRecorder) SendAndClose(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendAndClose", reflect.TypeOf((*MockTranscriberService_PromptServer)(nil).SendAndClose), arg0)
+}
+
+// SendHeader mocks base method.
+func (m *MockTranscriberService_PromptServer) SendHeader(arg0 metadata.MD) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendHeader", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendHeader indicates an expected call of SendHeader.
+func (mr *MockTranscriberService_PromptServerMockRecorder) SendHeader(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendHeader", reflect.TypeOf((*MockTranscriberService_PromptServer)(nil).SendHeader), arg0)
+}
+
+// SendMsg mocks base method.
+func (m_2 *MockTranscriberService_PromptServer) SendMsg(m interface{}) error {
+	m_2.ctrl.T.Helper()
+	ret := m_2.ctrl.Call(m_2, "SendMsg", m)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendMsg indicates an expected call of SendMsg.
+func (mr *MockTranscriberService_PromptServerMockRecorder) SendMsg(m interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendMsg", reflect.TypeOf((*MockTranscriberService_PromptServer)(nil).SendMsg), m)
+}
+
+// SetHeader mocks base method.
+func (m *MockTranscriberService_PromptServer) SetHeader(arg0 metadata.MD) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetHeader", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetHeader indicates an expected call of SetHeader.
+func (mr *MockTranscriberService_PromptServerMockRecorder) SetHeader(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetHeader", reflect.TypeOf((*MockTranscriberService_PromptServer)(nil).SetHeader), arg0)
+}
+
+// SetTrailer mocks base method.
+func (m *MockTranscriberService_PromptServer) SetTrailer(arg0 metadata.MD) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetTrailer", arg0)
+}
+
+// SetTrailer indicates an expected call of SetTrailer.
+func (mr *MockTranscriberService_PromptServerMockRecorder) SetTrailer(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetTrailer", reflect.TypeOf((*MockTranscriberService_PromptServer)(nil).SetTrailer), arg0)
 }

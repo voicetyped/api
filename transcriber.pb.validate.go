@@ -726,3 +726,297 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = TranscribeRequestValidationError{}
+
+// Validate checks the field values on QRequest with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *QRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on QRequest with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in QRequestMultiError, or nil
+// if none found.
+func (m *QRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *QRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Message
+
+	{
+		sorted_keys := make([]string, len(m.GetHistory()))
+		i := 0
+		for key := range m.GetHistory() {
+			sorted_keys[i] = key
+			i++
+		}
+		sort.Slice(sorted_keys, func(i, j int) bool { return sorted_keys[i] < sorted_keys[j] })
+		for _, key := range sorted_keys {
+			val := m.GetHistory()[key]
+			_ = val
+
+			// no validation rules for History[key]
+
+			if all {
+				switch v := interface{}(val).(type) {
+				case interface{ ValidateAll() error }:
+					if err := v.ValidateAll(); err != nil {
+						errors = append(errors, QRequestValidationError{
+							field:  fmt.Sprintf("History[%v]", key),
+							reason: "embedded message failed validation",
+							cause:  err,
+						})
+					}
+				case interface{ Validate() error }:
+					if err := v.Validate(); err != nil {
+						errors = append(errors, QRequestValidationError{
+							field:  fmt.Sprintf("History[%v]", key),
+							reason: "embedded message failed validation",
+							cause:  err,
+						})
+					}
+				}
+			} else if v, ok := interface{}(val).(interface{ Validate() error }); ok {
+				if err := v.Validate(); err != nil {
+					return QRequestValidationError{
+						field:  fmt.Sprintf("History[%v]", key),
+						reason: "embedded message failed validation",
+						cause:  err,
+					}
+				}
+			}
+
+		}
+	}
+
+	if len(errors) > 0 {
+		return QRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// QRequestMultiError is an error wrapping multiple validation errors returned
+// by QRequest.ValidateAll() if the designated constraints aren't met.
+type QRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m QRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m QRequestMultiError) AllErrors() []error { return m }
+
+// QRequestValidationError is the validation error returned by
+// QRequest.Validate if the designated constraints aren't met.
+type QRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e QRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e QRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e QRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e QRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e QRequestValidationError) ErrorName() string { return "QRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e QRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sQRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = QRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = QRequestValidationError{}
+
+// Validate checks the field values on QResponse with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *QResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on QResponse with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in QResponseMultiError, or nil
+// if none found.
+func (m *QResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *QResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Response
+
+	{
+		sorted_keys := make([]string, len(m.GetExtras()))
+		i := 0
+		for key := range m.GetExtras() {
+			sorted_keys[i] = key
+			i++
+		}
+		sort.Slice(sorted_keys, func(i, j int) bool { return sorted_keys[i] < sorted_keys[j] })
+		for _, key := range sorted_keys {
+			val := m.GetExtras()[key]
+			_ = val
+
+			// no validation rules for Extras[key]
+
+			if all {
+				switch v := interface{}(val).(type) {
+				case interface{ ValidateAll() error }:
+					if err := v.ValidateAll(); err != nil {
+						errors = append(errors, QResponseValidationError{
+							field:  fmt.Sprintf("Extras[%v]", key),
+							reason: "embedded message failed validation",
+							cause:  err,
+						})
+					}
+				case interface{ Validate() error }:
+					if err := v.Validate(); err != nil {
+						errors = append(errors, QResponseValidationError{
+							field:  fmt.Sprintf("Extras[%v]", key),
+							reason: "embedded message failed validation",
+							cause:  err,
+						})
+					}
+				}
+			} else if v, ok := interface{}(val).(interface{ Validate() error }); ok {
+				if err := v.Validate(); err != nil {
+					return QResponseValidationError{
+						field:  fmt.Sprintf("Extras[%v]", key),
+						reason: "embedded message failed validation",
+						cause:  err,
+					}
+				}
+			}
+
+		}
+	}
+
+	if len(errors) > 0 {
+		return QResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// QResponseMultiError is an error wrapping multiple validation errors returned
+// by QResponse.ValidateAll() if the designated constraints aren't met.
+type QResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m QResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m QResponseMultiError) AllErrors() []error { return m }
+
+// QResponseValidationError is the validation error returned by
+// QResponse.Validate if the designated constraints aren't met.
+type QResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e QResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e QResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e QResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e QResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e QResponseValidationError) ErrorName() string { return "QResponseValidationError" }
+
+// Error satisfies the builtin error interface
+func (e QResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sQResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = QResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = QResponseValidationError{}

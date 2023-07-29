@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	TranscriberService_Transcribe_FullMethodName = "/apis.TranscriberService/Transcribe"
+	TranscriberService_Prompt_FullMethodName     = "/apis.TranscriberService/Prompt"
 )
 
 // TranscriberServiceClient is the client API for TranscriberService service.
@@ -29,6 +30,7 @@ type TranscriberServiceClient interface {
 	// Performs bidirectional streaming speech recognition: receive results while
 	// sending audio.
 	Transcribe(ctx context.Context, opts ...grpc.CallOption) (TranscriberService_TranscribeClient, error)
+	Prompt(ctx context.Context, opts ...grpc.CallOption) (TranscriberService_PromptClient, error)
 }
 
 type transcriberServiceClient struct {
@@ -70,6 +72,40 @@ func (x *transcriberServiceTranscribeClient) Recv() (*TranscribeResponse, error)
 	return m, nil
 }
 
+func (c *transcriberServiceClient) Prompt(ctx context.Context, opts ...grpc.CallOption) (TranscriberService_PromptClient, error) {
+	stream, err := c.cc.NewStream(ctx, &TranscriberService_ServiceDesc.Streams[1], TranscriberService_Prompt_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &transcriberServicePromptClient{stream}
+	return x, nil
+}
+
+type TranscriberService_PromptClient interface {
+	Send(*QRequest) error
+	CloseAndRecv() (*QResponse, error)
+	grpc.ClientStream
+}
+
+type transcriberServicePromptClient struct {
+	grpc.ClientStream
+}
+
+func (x *transcriberServicePromptClient) Send(m *QRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *transcriberServicePromptClient) CloseAndRecv() (*QResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(QResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // TranscriberServiceServer is the server API for TranscriberService service.
 // All implementations must embed UnimplementedTranscriberServiceServer
 // for forward compatibility
@@ -77,6 +113,7 @@ type TranscriberServiceServer interface {
 	// Performs bidirectional streaming speech recognition: receive results while
 	// sending audio.
 	Transcribe(TranscriberService_TranscribeServer) error
+	Prompt(TranscriberService_PromptServer) error
 	mustEmbedUnimplementedTranscriberServiceServer()
 }
 
@@ -86,6 +123,9 @@ type UnimplementedTranscriberServiceServer struct {
 
 func (UnimplementedTranscriberServiceServer) Transcribe(TranscriberService_TranscribeServer) error {
 	return status.Errorf(codes.Unimplemented, "method Transcribe not implemented")
+}
+func (UnimplementedTranscriberServiceServer) Prompt(TranscriberService_PromptServer) error {
+	return status.Errorf(codes.Unimplemented, "method Prompt not implemented")
 }
 func (UnimplementedTranscriberServiceServer) mustEmbedUnimplementedTranscriberServiceServer() {}
 
@@ -126,6 +166,32 @@ func (x *transcriberServiceTranscribeServer) Recv() (*TranscribeRequest, error) 
 	return m, nil
 }
 
+func _TranscriberService_Prompt_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(TranscriberServiceServer).Prompt(&transcriberServicePromptServer{stream})
+}
+
+type TranscriberService_PromptServer interface {
+	SendAndClose(*QResponse) error
+	Recv() (*QRequest, error)
+	grpc.ServerStream
+}
+
+type transcriberServicePromptServer struct {
+	grpc.ServerStream
+}
+
+func (x *transcriberServicePromptServer) SendAndClose(m *QResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *transcriberServicePromptServer) Recv() (*QRequest, error) {
+	m := new(QRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // TranscriberService_ServiceDesc is the grpc.ServiceDesc for TranscriberService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -138,6 +204,11 @@ var TranscriberService_ServiceDesc = grpc.ServiceDesc{
 			StreamName:    "Transcribe",
 			Handler:       _TranscriberService_Transcribe_Handler,
 			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "Prompt",
+			Handler:       _TranscriberService_Prompt_Handler,
 			ClientStreams: true,
 		},
 	},

@@ -8,6 +8,7 @@ option java_package = "com.voicetyped.api.transcriber";
 
 
 import "google/protobuf/duration.proto";
+import "google/protobuf/any.proto";
 
 message AudioFormat{
 
@@ -117,6 +118,10 @@ message TranscribeConfig {
     // ([OggOpus](https://wiki.xiph.org/OggOpus)). `sample_rate_hertz` must be
     // one of 8000, 12000, 16000, 24000, or 48000.
     WEBM_OPUS = 9;
+
+    // Headerless 8-bit companded alaw samples.  used for audio compression in telecommunication systems. Like MULAW, it is commonly used in older telephony networks.
+    ALAW = 10;
+
   }
 
   // Defines the quality with which our transcription is performed
@@ -142,7 +147,7 @@ enum SpeechEventType {
   // will not process additional audio and will close the gRPC bidirectional
   // stream. This event is only sent if there was a force cutoff due to
   // silence being detected early.
-  END_OF_SINGLE_UTTERANCE = 1;
+  SPEECH_ACTIVITY_END_OF_SINGLE_UTTERANCE = 1;
 
   // This event indicates that the server has detected the beginning of human
   // voice activity in the stream. This event can be returned multiple times
@@ -212,13 +217,7 @@ message TranscribeResponse {
 
 
 // Request message for the
-// [TranscribeRequest]
-// [audio][google.cloud.speech.v2.StreamingRecognizeRequest.audio]. All
-// subsequent messages must contain
-// [audio][google.cloud.speech.v2.StreamingRecognizeRequest.audio] and must not
-// contain a
-// [streaming_config][google.cloud.speech.v2.StreamingRecognizeRequest.streaming_config]
-// message.
+// [TranscribeRequest] message used to configure a request stream, send audio and any control signals in between.
 message TranscribeRequest {
   oneof request {
 
@@ -235,11 +234,19 @@ message TranscribeRequest {
 
 }
 
+message QRequest{
+  string message = 1;
+  map<string, google.protobuf.Any> history = 2;
+}
 
+message QResponse{
+  string response = 1;
+  map<string, google.protobuf.Any> extras = 2;
+}
 
 service TranscriberService {
   // Performs bidirectional streaming speech recognition: receive results while
   // sending audio.
-  rpc Transcribe(stream TranscribeRequest)
-      returns (stream TranscribeResponse) {}
+  rpc Transcribe(stream TranscribeRequest) returns (stream TranscribeResponse) {}
+  rpc Prompt(stream QRequest) returns (QResponse) {}
 }
