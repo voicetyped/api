@@ -31,7 +31,7 @@ type TranscriberServiceClient interface {
 	// sending audio.
 	Transcribe(ctx context.Context, opts ...grpc.CallOption) (TranscriberService_TranscribeClient, error)
 	// Use gpt to quickly make sense of what the data is being generated quickly
-	Prompt(ctx context.Context, opts ...grpc.CallOption) (TranscriberService_PromptClient, error)
+	Prompt(ctx context.Context, in *GptRequest, opts ...grpc.CallOption) (*GptResponse, error)
 }
 
 type transcriberServiceClient struct {
@@ -73,38 +73,13 @@ func (x *transcriberServiceTranscribeClient) Recv() (*TranscribeResponse, error)
 	return m, nil
 }
 
-func (c *transcriberServiceClient) Prompt(ctx context.Context, opts ...grpc.CallOption) (TranscriberService_PromptClient, error) {
-	stream, err := c.cc.NewStream(ctx, &TranscriberService_ServiceDesc.Streams[1], TranscriberService_Prompt_FullMethodName, opts...)
+func (c *transcriberServiceClient) Prompt(ctx context.Context, in *GptRequest, opts ...grpc.CallOption) (*GptResponse, error) {
+	out := new(GptResponse)
+	err := c.cc.Invoke(ctx, TranscriberService_Prompt_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &transcriberServicePromptClient{stream}
-	return x, nil
-}
-
-type TranscriberService_PromptClient interface {
-	Send(*GptRequest) error
-	CloseAndRecv() (*GptResponse, error)
-	grpc.ClientStream
-}
-
-type transcriberServicePromptClient struct {
-	grpc.ClientStream
-}
-
-func (x *transcriberServicePromptClient) Send(m *GptRequest) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *transcriberServicePromptClient) CloseAndRecv() (*GptResponse, error) {
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	m := new(GptResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // TranscriberServiceServer is the server API for TranscriberService service.
@@ -115,7 +90,7 @@ type TranscriberServiceServer interface {
 	// sending audio.
 	Transcribe(TranscriberService_TranscribeServer) error
 	// Use gpt to quickly make sense of what the data is being generated quickly
-	Prompt(TranscriberService_PromptServer) error
+	Prompt(context.Context, *GptRequest) (*GptResponse, error)
 	mustEmbedUnimplementedTranscriberServiceServer()
 }
 
@@ -126,8 +101,8 @@ type UnimplementedTranscriberServiceServer struct {
 func (UnimplementedTranscriberServiceServer) Transcribe(TranscriberService_TranscribeServer) error {
 	return status.Errorf(codes.Unimplemented, "method Transcribe not implemented")
 }
-func (UnimplementedTranscriberServiceServer) Prompt(TranscriberService_PromptServer) error {
-	return status.Errorf(codes.Unimplemented, "method Prompt not implemented")
+func (UnimplementedTranscriberServiceServer) Prompt(context.Context, *GptRequest) (*GptResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Prompt not implemented")
 }
 func (UnimplementedTranscriberServiceServer) mustEmbedUnimplementedTranscriberServiceServer() {}
 
@@ -168,30 +143,22 @@ func (x *transcriberServiceTranscribeServer) Recv() (*TranscribeRequest, error) 
 	return m, nil
 }
 
-func _TranscriberService_Prompt_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(TranscriberServiceServer).Prompt(&transcriberServicePromptServer{stream})
-}
-
-type TranscriberService_PromptServer interface {
-	SendAndClose(*GptResponse) error
-	Recv() (*GptRequest, error)
-	grpc.ServerStream
-}
-
-type transcriberServicePromptServer struct {
-	grpc.ServerStream
-}
-
-func (x *transcriberServicePromptServer) SendAndClose(m *GptResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *transcriberServicePromptServer) Recv() (*GptRequest, error) {
-	m := new(GptRequest)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
+func _TranscriberService_Prompt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GptRequest)
+	if err := dec(in); err != nil {
 		return nil, err
 	}
-	return m, nil
+	if interceptor == nil {
+		return srv.(TranscriberServiceServer).Prompt(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TranscriberService_Prompt_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TranscriberServiceServer).Prompt(ctx, req.(*GptRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 // TranscriberService_ServiceDesc is the grpc.ServiceDesc for TranscriberService service.
@@ -200,17 +167,17 @@ func (x *transcriberServicePromptServer) Recv() (*GptRequest, error) {
 var TranscriberService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "apis.TranscriberService",
 	HandlerType: (*TranscriberServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Prompt",
+			Handler:    _TranscriberService_Prompt_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "Transcribe",
 			Handler:       _TranscriberService_Transcribe_Handler,
 			ServerStreams: true,
-			ClientStreams: true,
-		},
-		{
-			StreamName:    "Prompt",
-			Handler:       _TranscriberService_Prompt_Handler,
 			ClientStreams: true,
 		},
 	},

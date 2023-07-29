@@ -250,5 +250,5 @@ service TranscriberService {
   rpc Transcribe(stream TranscribeRequest) returns (stream TranscribeResponse) {}
 
   // Use gpt to quickly make sense of what the data is being generated quickly
-  rpc Prompt(stream GptRequest) returns (GptResponse) {}
+  rpc Prompt(GptRequest) returns (GptResponse) {}
 }
