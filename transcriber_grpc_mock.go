@@ -237,10 +237,10 @@ func (m *MockTranscriberService_PromptClient) EXPECT() *MockTranscriberService_P
 }
 
 // CloseAndRecv mocks base method.
-func (m *MockTranscriberService_PromptClient) CloseAndRecv() (*QResponse, error) {
+func (m *MockTranscriberService_PromptClient) CloseAndRecv() (*GptResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CloseAndRecv")
-	ret0, _ := ret[0].(*QResponse)
+	ret0, _ := ret[0].(*GptResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -309,7 +309,7 @@ func (mr *MockTranscriberService_PromptClientMockRecorder) RecvMsg(m interface{}
 }
 
 // Send mocks base method.
-func (m *MockTranscriberService_PromptClient) Send(arg0 *QRequest) error {
+func (m *MockTranscriberService_PromptClient) Send(arg0 *GptRequest) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Send", arg0)
 	ret0, _ := ret[0].(error)
@@ -620,10 +620,10 @@ func (mr *MockTranscriberService_PromptServerMockRecorder) Context() *gomock.Cal
 }
 
 // Recv mocks base method.
-func (m *MockTranscriberService_PromptServer) Recv() (*QRequest, error) {
+func (m *MockTranscriberService_PromptServer) Recv() (*GptRequest, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Recv")
-	ret0, _ := ret[0].(*QRequest)
+	ret0, _ := ret[0].(*GptRequest)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -649,7 +649,7 @@ func (mr *MockTranscriberService_PromptServerMockRecorder) RecvMsg(m interface{}
 }
 
 // SendAndClose mocks base method.
-func (m *MockTranscriberService_PromptServer) SendAndClose(arg0 *QResponse) error {
+func (m *MockTranscriberService_PromptServer) SendAndClose(arg0 *GptResponse) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SendAndClose", arg0)
 	ret0, _ := ret[0].(error)

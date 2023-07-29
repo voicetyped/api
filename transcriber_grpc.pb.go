@@ -30,6 +30,7 @@ type TranscriberServiceClient interface {
 	// Performs bidirectional streaming speech recognition: receive results while
 	// sending audio.
 	Transcribe(ctx context.Context, opts ...grpc.CallOption) (TranscriberService_TranscribeClient, error)
+	// Use gpt to quickly make sense of what the data is being generated quickly
 	Prompt(ctx context.Context, opts ...grpc.CallOption) (TranscriberService_PromptClient, error)
 }
 
@@ -82,8 +83,8 @@ func (c *transcriberServiceClient) Prompt(ctx context.Context, opts ...grpc.Call
 }
 
 type TranscriberService_PromptClient interface {
-	Send(*QRequest) error
-	CloseAndRecv() (*QResponse, error)
+	Send(*GptRequest) error
+	CloseAndRecv() (*GptResponse, error)
 	grpc.ClientStream
 }
 
@@ -91,15 +92,15 @@ type transcriberServicePromptClient struct {
 	grpc.ClientStream
 }
 
-func (x *transcriberServicePromptClient) Send(m *QRequest) error {
+func (x *transcriberServicePromptClient) Send(m *GptRequest) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *transcriberServicePromptClient) CloseAndRecv() (*QResponse, error) {
+func (x *transcriberServicePromptClient) CloseAndRecv() (*GptResponse, error) {
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
-	m := new(QResponse)
+	m := new(GptResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -113,6 +114,7 @@ type TranscriberServiceServer interface {
 	// Performs bidirectional streaming speech recognition: receive results while
 	// sending audio.
 	Transcribe(TranscriberService_TranscribeServer) error
+	// Use gpt to quickly make sense of what the data is being generated quickly
 	Prompt(TranscriberService_PromptServer) error
 	mustEmbedUnimplementedTranscriberServiceServer()
 }
@@ -171,8 +173,8 @@ func _TranscriberService_Prompt_Handler(srv interface{}, stream grpc.ServerStrea
 }
 
 type TranscriberService_PromptServer interface {
-	SendAndClose(*QResponse) error
-	Recv() (*QRequest, error)
+	SendAndClose(*GptResponse) error
+	Recv() (*GptRequest, error)
 	grpc.ServerStream
 }
 
@@ -180,12 +182,12 @@ type transcriberServicePromptServer struct {
 	grpc.ServerStream
 }
 
-func (x *transcriberServicePromptServer) SendAndClose(m *QResponse) error {
+func (x *transcriberServicePromptServer) SendAndClose(m *GptResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *transcriberServicePromptServer) Recv() (*QRequest, error) {
-	m := new(QRequest)
+func (x *transcriberServicePromptServer) Recv() (*GptRequest, error) {
+	m := new(GptRequest)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}

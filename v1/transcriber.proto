@@ -234,12 +234,12 @@ message TranscribeRequest {
 
 }
 
-message QRequest{
+message GptRequest{
   string message = 1;
   map<string, google.protobuf.Any> history = 2;
 }
 
-message QResponse{
+message GptResponse{
   string response = 1;
   map<string, google.protobuf.Any> extras = 2;
 }
@@ -248,5 +248,7 @@ service TranscriberService {
   // Performs bidirectional streaming speech recognition: receive results while
   // sending audio.
   rpc Transcribe(stream TranscribeRequest) returns (stream TranscribeResponse) {}
-  rpc Prompt(stream QRequest) returns (QResponse) {}
+
+  // Use gpt to quickly make sense of what the data is being generated quickly
+  rpc Prompt(stream GptRequest) returns (GptResponse) {}
 }
