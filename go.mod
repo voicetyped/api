@@ -6,7 +6,7 @@ require (
 	github.com/antinvestor/apis v1.1.16
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.3
-	google.golang.org/grpc v1.56.2
+	google.golang.org/grpc v1.56.3
 	google.golang.org/protobuf v1.31.0
 )
 
